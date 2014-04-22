@@ -1,3 +1,4 @@
+var fs = require("fs");
 var bodies = new Array();
 var canvas;
 var ctx;
@@ -7,6 +8,7 @@ var polygoncanvas;
 var polygonctx;
 var addvertex;
 var isfirst;
+var pworld;
 
 var Q = function (x) {
     return document.querySelector(x);
@@ -100,6 +102,7 @@ $(function () {
 });
 
 var sim = function (world) {
+    pworld = world;
     var renderer = Physics.renderer('canvas', {
         el: 'viewport',
         width: 500,
@@ -326,6 +329,39 @@ var sim = function (world) {
 
     world.pause();
 
-    // start the ticker
-    Physics.util.ticker.start();
-}
+    $("#save").click(function () {
+
+        save(prompt("Enter Filename:"));
+
+    });
+
+    $("#open").click(function () {
+        open(prompt("Enter Filename:"));
+    });
+
+    function save(filename) {
+        fs.exists(filename, function (exists) {
+            if (!exists) {
+                fs.writeFile(filename, JSON.stringify(bodies));
+            } else
+                alert("File Already Exists");
+        });
+    }
+
+    function load(filename) {
+        fs.exists(filename, function (exists) {
+                if (exists) {
+                    fs.readFile(filename, function (err, data) {
+                        bodies = JSON.parse(data);
+                    });
+                    for (i = 0, i < bodies.length, i++) {
+                        world.add(bodies[i]);
+                    }
+                } else
+                    alert("File does not exist");
+            }
+        }
+
+        // start the ticker
+        Physics.util.ticker.start();
+    }
