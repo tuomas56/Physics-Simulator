@@ -2,6 +2,11 @@ var bodies = new Array();
 var canvas;
 var ctx;
 var acc = 0;
+var vertices = new Array();
+var polygoncanvas;
+var polygonctx;
+var addvertex;
+var isfirst;
 
 var Q = function (x) {
     return document.querySelector(x);
@@ -156,7 +161,7 @@ var sim = function (world) {
     bodydetect.disconnect(world);
 
     $("#add").click(function () {
-        if (type.value == "circle") {
+        if (Q("#type").value == "circle") {
             var b = Physics.body("circle", {
                 x: Q("#x").value,
                 y: Q("#y").value,
@@ -167,7 +172,7 @@ var sim = function (world) {
             });
             world.add(b);
             bodies.push(b);
-        } else if (type.value == "square") {
+        } else if (Q("#type").value == "square") {
             var b = Physics.body("convex-polygon", {
                 x: Q("#x").value,
                 y: Q("#y").value,
@@ -191,6 +196,22 @@ var sim = function (world) {
             });
             world.add(b);
             bodies.push(b);
+        } else {
+
+            if (vertices != new Array()) {
+                var b = Physics.body('convex-polygon', {
+                    x: Q("#x").value,
+                    y: Q("#y").value,
+                    vx: Q("#vx").value,
+                    vy: Q("#vy").value,
+                    radius: (Q("#radius").percentage / 100) * 40,
+                    mass: Q("#mass").value,
+                    vertices: vertices
+                });
+                world.add(b);
+                bodies.push(b);
+            }
+
         }
         if (world.isPaused()) {
             world.render();
@@ -225,6 +246,44 @@ var sim = function (world) {
             x: 0,
             y: acc
         });
+    });
+
+    $("#type").change(function () {
+        if (this.value == "polygon") {
+            $("#polygon").show();
+            polygoncanvas = Q("#polygoncanvas");
+            polygonctx = polygoncanvas.getContext('2d');
+            isfirst = true;
+        }
+    });
+
+    $("#vertex").click(function () {
+        addvertex = true;
+    });
+
+    $("#done").click(function () {
+        $("#polygon").hide();
+    });
+
+    $("#polygoncanvas").click(function (e) {
+        var x = e.pageX - Q("#polygoncanvas").offsetParent.offsetParent.offsetLeft;
+        var y = e.pageY - Q("#polygoncanvas").offsetParent.offsetParent.offsetTop;
+        if (addvertex) {
+            if (isfirst) {
+                polygonctx.beginPath();
+                polygonctx.moveTo(x, y);
+                isfirst = false;
+            } else
+                polygonctx.lineTo(x, y);
+            polygonctx.fillRect(x - 2, y - 2, 5, 5);
+            polygonctx.draw();
+            polygonctx.fill();
+            addvertex = false;
+            vertices.push({
+                x: x,
+                y: y
+            });
+        }
     });
 
     // ensure objects bounce when edge collision is detected
