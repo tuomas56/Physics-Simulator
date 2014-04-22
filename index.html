@@ -1,0 +1,342 @@
+<html>
+
+<head>
+    <script src="js/jquery/jquery-1.11.0.min.js"></script>
+    <script src="js/jquery/jquery-ui-1.10.4.min.js"></script>
+    <script src="js/elements.js"></script>
+    <script src="js/metro/metro.min.js"></script>
+    <script src="js/physicsjs/physicsjs-full-0.5.4.min.js"></script>
+    <script src="js/main.js"></script>
+    <link rel="stylesheet" type="text/css" href="css/metro/metro-bootstrap.css"></link>
+    <link rel="stylesheet" type="text/css" href="css/metro/metro-bootstrap-responsive.css"></link>
+    <link rel="stylesheet" type="text/css" href="css/metro/iconFont.min.css"></link>
+    <link rel="stylesheet" type="text/css" href="css/jquery/jquery-ui.css"></link>
+    <style>
+        .window {
+            position: absolute;
+        }
+    </style>
+</head>
+
+<body class="metro grid-fluid">
+
+    <nav class="navigation-bar dark">
+        <nav class="navigation-bar-content no-select">
+            <item class="element" style="padding-right: 20px">
+                <a class="dropdown-toggle" href="#">File</a>
+                <ul class="dropdown-menu" data-role="dropdown">
+                    <li>
+                        <a href="#" id="openwindow">
+                            <i class="icon-upload-3 on-left-more"></i>
+                            Open
+                        </a>
+                    </li>
+                    <li class="divider"></li>
+                    <li>
+                        <a href="#" id="savewindow">
+                            <i class="icon-download-2 on-left-more"></i>
+                            Save
+                        </a>
+                    </li>
+                    <li class="divider"></li>
+                    <li>
+                        <a href="#" id="exit">
+                            <i class="icon-cancel-2 on-left-more"></i>
+                            Quit
+                        </a>
+                    </li>
+                </ul>
+            </item>
+            <item class="element-divider"></item>
+            <item class="element" style="padding-right: 20px">
+                <a class="dropdown-toggle" href="#">Windows</a>
+                <ul class="dropdown-menu" data-role="dropdown">
+                    <li>
+                        <a href="#" id="simulationwindow">
+                            <i class="icon-rocket on-left-more"></i>
+                            Simulation
+                        </a>
+                    </li>
+                    <li class="divider"></li>
+                    <li>
+                        <a href="#" id="objectswindow">
+                            <i class="icon-cube on-left-more"></i>
+                            Objects
+                        </a>
+                    </li>
+                    <li class="divider"></li>
+                    <li>
+                        <a href="#" id="behaviourswindow">
+                            <i class="icon-lab on-left-more"></i>
+                            Behaviours
+                        </a>
+                    </li>
+                    <li class="divider"></li>
+                    <li>
+                        <a href="#" id="controlswindow">
+                            <i class="icon-cog on-left-more"></i>
+                            Controls
+                        </a>
+                    </li>
+                </ul>
+            </item>
+            <item class="element place-right" style="padding-right: 20px">
+                <a class="dropdown-toggle place-right" href="#">Themes</a>
+                <ul class="dropdown-menu place-right" data-role="dropdown">
+                    <li>
+                        <a href="#" id="themelight">
+                            <i class="icon-sun-3 on-left-more"></i>
+                            Light
+                        </a>
+                    </li>
+                    <li class="divider"></li>
+                    <li>
+                        <a href="#" id="themedark">
+                            <i class="icon-moon-2 on-left-more"></i>
+                            Dark
+                        </a>
+                    </li>
+                </ul>
+            </item>
+        </nav>
+    </nav>
+
+    <style>
+        #simulation:not(.flat) {
+            min-height: 540px;
+            min-width: 516px;
+            height: 540px;
+            width: 516px;
+        }
+        #simulation.flat {
+            min-height: 540px;
+            min-width: 500px;
+            height: 540px;
+            width: 500px;
+        }
+        #simulation.flat > .content > canvas {
+            position: relative;
+            top: -20px;
+        }
+    </style>
+    <div class="window draggable inactive" id="simulation">
+        <div class="caption handle" height="auto">
+            <span class="icon icon-rocket"></span>
+            <div class="title">Simulation</div>
+            <button class="btn-close"></button>
+        </div>
+        <div class="content no-select">
+            <canvas id="viewport" height="500" width="500"></canvas>
+        </div>
+    </div>
+
+    <style>
+        #controls:not(.flat) {
+            min-height: 150px;
+            min-width: 150px;
+            height: 150px;
+            width: 150px;
+        }
+        #controls.flat {
+            min-height: 150px;
+            min-width: 150px;
+            height: 150px;
+            width: 150px;
+        }
+    </style>
+    <div class="window draggable inactive" id="controls">
+        <div class="caption handle">
+            <span class="icon icon-cog"></span>
+            <div class="title">Controls</div>
+            <button class="btn-close"></button>
+        </div>
+        <div class="content no-select" style="text-align: center;">
+            <form onsubmit="return false;" action='#'>
+                <br/>
+                <div class="input-control switch">
+                    <label>
+                        Trace:
+                        <input type="checkbox" id="trace" />
+                        <span class="check"></span>
+                    </label>
+                </div>
+                <br/>
+                <button id="go" onclick="">Start</button>
+            </form>
+        </div>
+    </div>
+
+    <style>
+        #objects:not(.flat) {
+            min-height: 620px;
+            min-width: 200px;
+            height: 620px;
+            width: 200px;
+        }
+        #objects.flat {
+            min-height: 620px;
+            min-width: 200px;
+            height: 620px;
+            width: 200px;
+        }
+    </style>
+    <div class="window draggable inactive" id="objects">
+        <div class="caption handle">
+            <span class="icon icon-cube"></span>
+            <div class="title">Objects</div>
+            <button class="btn-close"></button>
+        </div>
+        <div class="content no-select" style="text-align: center;">
+            <form onsubmit="return false;" action="#">
+                <div class="input-control select">
+                    <label>Type:</label>
+                    <select id="type">
+                        <option value="square">Square</option>
+                        <option value="circle" selected>Circle</option>
+                        <option value="polygon">Polygon</option>
+                    </select>
+                </div>
+                <br/>
+                <div class="input-control text">
+                    <label>X:</label>
+                    <input type="text" id="x" />
+
+                </div>
+                <br/>
+                <br/>
+                <div class="input-control text">
+                    <label>Y:</label>
+                    <input type="text" id="y" />
+
+                </div>
+                <br/>
+                <br/>
+                <br/>
+                <button onclick="pickcoords=true">Pick Coordinates</button>
+                <br/>
+                <br/>
+                <div class="input-control text">
+                    <label>VX:</label>
+                    <input type="text" id="vx" />
+                </div>
+                <br/>
+                <br/>
+                <div class="input-control text">
+                    <label>VY:</label>
+                    <input type="text" id="vy" />
+
+                </div>
+                <br/>
+                <br/>
+                <div class="input-control text">
+                    <label>Mass:</label>
+                    <input type="text" id="mass" />
+
+                </div>
+                <br/>
+                <br/>
+                <br/>Radius:
+                <br/>
+                <br/>
+                <x-slider id="radius"></x-slider>
+                <br/>
+                <button id="add">Add</button>
+                <br/>
+            </form>
+        </div>
+    </div>
+    <style>
+        #behaviours:not(.flat) {
+            min-height: 360px;
+            min-width: 200px;
+            height: 360px;
+            width: 200px;
+        }
+        #behaviours.flat {
+            min-height: 360px;
+            min-width: 200px;
+            height: 360px;
+            width: 200px;
+        }
+    </style>
+    <div class="window draggable inactive" id="behaviours">
+        <div class="caption handle">
+            <span class="icon icon-lab"></span>
+            <div class="title">Behaviours</div>
+            <button class="btn-close"></button>
+        </div>
+        <div class="content no-select" style="text-align: center;">
+            <form onsubmit="return false;" action='#'>
+                Gravity:
+                <br/>
+                <br/>
+                <x-slider id="gravity"></x-slider>
+                <br/>Constant Acceleration:
+                <br/>
+                <br/>
+                <br/>
+                <x-slider id="constant"></x-slider>
+                <br/>
+                <div class="input-control select">
+                    Direction:
+                    <select id="direction">
+                        <option value="down">Up</option>
+                        <option value="up">Down</option>
+                    </select>
+                </div>
+                <br/>
+                <br/>
+                <div class="input-control switch">
+                    <label>
+                        Edge Collisions:
+                        <input type="checkbox" id="edge" />
+                        <span class="check"></span>
+                    </label>
+                </div>
+                <div class="input-control switch">
+                    <label>
+                        Body Collisions:
+                        <input type="checkbox" id="body" />
+                        <span class="check"></span>
+                    </label>
+                </div>
+            </form>
+        </div>
+    </div>
+    <style>
+        #polygon:not(.flat) {
+            min-height: 400px;
+            min-width: 300px;
+            height: 400px;
+            width: 300px;
+        }
+        #polygon.flat {
+            min-height: 400px;
+            min-width: 300px;
+            height: 400px;
+            width: 300px;
+        }
+    </style>
+    <div class="window draggable inactive" id="polygon">
+        <div class="caption handle">
+            <span class="icon icon-cube-2"></span>
+            <div class="title">Polygon</div>
+            <button class="btn-close"></button>
+        </div>
+        <div class="content no-select" style="text-align: center;">
+            <br/>
+            <canvas id="polygoncanvas" height="200" width="200" style="border: solid 1px black"></canvas>
+            <form onsubmit="return false;" action="#">
+                <br/>
+                <br/>
+                <button id="vertex">Add Vertex</button>
+                <br/>
+                <br/>
+                <br/>
+                <button id="done">Done</button>
+            </form>
+        </div>
+    </div>
+</body>
+
+</html>
