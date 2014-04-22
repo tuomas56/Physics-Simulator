@@ -266,8 +266,8 @@ var sim = function (world) {
     });
 
     $("#polygoncanvas").click(function (e) {
-        var x = e.pageX - Q("#polygoncanvas").offsetParent.offsetParent.offsetLeft;
-        var y = e.pageY - Q("#polygoncanvas").offsetParent.offsetParent.offsetTop;
+        var x = e.pageX - polygoncanvas.offsetParent.offsetParent.offsetLeft - polygoncanvas.offsetParent.offsetLeft - polygoncanvas.offsetLeft;
+        var y = e.pageY - polygoncanvas.offsetParent.offsetParent.offsetTop - polygoncanvas.offsetParent.offsetTop - polygoncanvas.offsetTop;
         if (addvertex) {
             if (isfirst) {
                 polygonctx.beginPath();
@@ -276,7 +276,7 @@ var sim = function (world) {
             } else
                 polygonctx.lineTo(x, y);
             polygonctx.fillRect(x - 2, y - 2, 5, 5);
-            polygonctx.draw();
+            polygonctx.stroke();
             polygonctx.fill();
             addvertex = false;
             vertices.push({
