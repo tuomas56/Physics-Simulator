@@ -1,4 +1,3 @@
-var fs = require("fs");
 var bodies = new Array();
 var canvas;
 var ctx;
@@ -257,6 +256,7 @@ var sim = function (world) {
             polygoncanvas = Q("#polygoncanvas");
             polygonctx = polygoncanvas.getContext('2d');
             isfirst = true;
+            polygonctx.clearRect(0,0,polygoncanvas.width,polygoncanvas.height);
         }
     });
 
@@ -331,15 +331,19 @@ var sim = function (world) {
 
     $("#save").click(function () {
 
-        save(prompt("Enter Filename:"));
+        //save(prompt("Enter Filename:"));
 
     });
 
     $("#open").click(function () {
-        open(prompt("Enter Filename:"));
+        //open(prompt("Enter Filename:"));
     });
 
-    function save(filename) {
+    $("#exit").click(function () {
+        open(location, '_self').close();
+    });
+
+    /*var save = function(filename) {
         fs.exists(filename, function (exists) {
             if (!exists) {
                 fs.writeFile(filename, JSON.stringify(bodies));
@@ -348,19 +352,19 @@ var sim = function (world) {
         });
     }
 
-    function load(filename) {
+    var load = function(filename) {
         fs.exists(filename, function (exists) {
                 if (exists) {
                     fs.readFile(filename, function (err, data) {
                         bodies = JSON.parse(data);
                     });
-                    for (i = 0, i < bodies.length, i++) {
+                    for (i = 0; i < bodies.length; i++) {
                         world.add(bodies[i]);
                     }
                 } else
                     alert("File does not exist");
-            }
-        }
+            });
+        }*/
 
         // start the ticker
         Physics.util.ticker.start();
